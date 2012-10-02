@@ -1,0 +1,44 @@
+#!/bin/bash
+
+declare -a terms array
+
+IFS=$'\x0a';
+
+if [ $# -lt 1 ]; then
+  while read -r line; do  terms+=( "$line" ); done
+else
+  while read -r line; do  terms+=( "$line" ); done < $1
+fi
+
+count=${#terms[@]}
+
+if [ $count -lt 24 ]; then
+  echo "Must have at least 24 entries"
+  exit
+fi
+
+mp_command=""
+
+array_create="string bs[]; "
+mp_command+="$array_create";
+
+i=1;
+
+declare -a escape_these=("'" "\"");
+
+for term in ${terms[@]}; do
+
+  for j in ${escape_these[@]}; do
+    term=${term//$j/\\$j}
+  done
+
+  mp_command+="bs[$i] := \"$term\"; ";
+  let "i+=1";
+done;
+
+mp_command+=" bsmax := $count; "
+mp_command+="input bbcard"
+
+command_string="mpost '\\$mp_command'"
+
+echo $command_string
