@@ -4,6 +4,8 @@ declare -a terms array
 
 IFS=$'\x0a';
 
+echo $@
+
 if [ $# -lt 1 ]; then
   while read -r line; do  terms+=( "$line" ); done
   
@@ -53,11 +55,12 @@ else
 
   eval $command_string
   
-  if [ $# -lt 2 ]; then
-    ps2pdf debate-bingo.ps $2
+  if [ $# -eq 2 ]; then
+    echo "Generating pdf..."
+    eval "ps2pdf debate-bingo.ps $2"
     exit
   fi
 fi
 
-ps2pdf debate-bingo.ps
+eval "ps2pdf debate-bingo.ps"
 
