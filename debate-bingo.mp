@@ -35,18 +35,28 @@ radius := .5 cm;
 offset := 1 cm;
 boxwid := 1.9 cm;
 
-string bs[];
-count := 0;
+bsmax := 0;
 
-forever:
-  string line;
-  line := readfrom file;
-  exitif line = EOF;
-  count := count + 1;
-  bs[count] := line;
-endfor;
+if not unknown file:
+  string bs[];
 
-bsmax := count;
+  forever:
+    string line;
+    line := readfrom file;
+    exitif line = EOF;
+  
+    if length line < 35:
+      bsmax := bsmax + 1;
+      bs[bsmax] := line;
+    else:
+      show "Line '" & line & "' had too many characters in it";
+    fi; 
+  endfor;
+fi;
+
+if bsmax < 24:
+  show "Error: Must have at least 24 lines of input";
+else:
 
 % co-ordinates for the grid
 pair bpos[], bpos[].ll, bpos[].ul, bpos[].ur, bpos[].lr;
@@ -129,7 +139,7 @@ fi;
 
  beginfig(bsno);
   picture p;
-  p := ("Bullshit Bingo" infont defaultfont scaled 2)
+  p := ("Political Bullshit Bingo" infont defaultfont scaled 2)
    shifted ((offset, 3offset)+2.25*ulcorner bbcard[0]);
 
   fill ((llcorner p)..(ulcorner p).. tension 2 .. (urcorner p)..
@@ -137,11 +147,11 @@ fi;
    withcolor .5 white;
   draw p withcolor white;
 
-  draw ("Advanced Playing Card" infont defaultfont scaled 1.2)
+  draw ("Special Reddit Edition" infont defaultfont scaled 1.2)
     shifted ((lrcorner p) + (10pt, 6pt));
-  draw ("Stay awake!" infont defaultfont)
+  draw ("Stay alert for incoming memes!" infont defaultfont)
     shifted ((lrcorner p) + (10pt, -14pt));
-  draw ("Watch for duplicates!" infont defaultfont)
+  draw ("Get off your smartphone!" infont defaultfont)
     shifted ((lrcorner p) + (10pt, -25pt));
   draw ("Have fun!" infont defaultfont)
     shifted ((lrcorner p) + (10pt, -36pt));
@@ -156,4 +166,5 @@ if known nocards:
  endfor;
 fi;
 
+fi;
 end;
